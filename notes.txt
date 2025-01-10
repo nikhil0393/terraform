@@ -1,0 +1,4 @@
+N. Virginia us-east-1
+Amazon Machine Image (AMI) ID => ami-0166fe664262f664c
+Instance type => t2.micro
+VPC => vpc-0b4e69460b1b48a5e

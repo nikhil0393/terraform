@@ -1,0 +1,43 @@
+resource "aws_s3_bucket" "my_s3_bucket" {
+    bucket = "my-s3-bucket-in28minutes-rangak-002"
+ #   versioning {
+ #       enabled = true
+ #   }
+}
+ 
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.my_s3_bucket.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+#<--------------------------------------------------------------->
+resource "aws_s3_bucket" "my_s3_bucket" {
+    bucket = "my-s3-bucket-terraform-002"
+    versioning {
+        enabled = true
+    }
+}
+
+#<--------------------------------------------------------------->
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 3.0"
+    }
+  }
+}
+ 
+# Configure the AWS Provider
+provider "aws" {
+  region = "us-east-1"
+  # VERSION IS NOT NEEDED HERE
+}
+
+#<--------------------------------------->
+provider "aws" {
+  version = "~> 3.0"
+  region  = "us-east-1"
+}

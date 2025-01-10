@@ -1,0 +1,76 @@
+
+------------------------------- 07-backend-state  -------------------------------
+Terraform Update: Versioning and Encryption
+resource "aws_s3_bucket" "enterprise_backend_state" {
+    bucket = "dev-applications-backend-state-in28minutes-abc"
+ 
+    lifecycle {
+        prevent_destroy = true
+    }
+ 
+#    versioning {
+#        enabled = true
+#    }
+#
+#    server_side_encryption_configuration {
+#        rule {
+#            apply_server_side_encryption_by_default {
+#                sse_algorithm = "AES256"
+#            }
+#        }
+#    }
+ 
+}
+ 
+resource "aws_s3_bucket_versioning" "versioning_example" {
+  bucket = aws_s3_bucket.enterprise_backend_state.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+ 
+resource "aws_s3_bucket_server_side_encryption_configuration" "example" {
+  bucket = aws_s3_bucket.enterprise_backend_state.bucket
+ 
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm     = "AES256"
+    }
+  }
+}
+
+------------------------------- 06-ec2-with-elb -------------------------------
+Updated code for recent Terraform versions
+
+Getting All Subnet Ids:
+
+# for_each  = data.aws_subnet_ids.default_subnets.ids
+for_each  = toset(data.aws_subnets.default_subnets.ids)
+
+------------------------------- 05-ec2-instances -------------------------------
+If you are having problems with AMIs, try these filters:
+filter {
+name = "name"
+values = ["amzn2-ami-kernel-5.10-hvm*"]
+}
+ 
+filter {
+name = "architecture"
+values = ["x86_64"]
+}
+<--------------------------------->
+CHANGE 1:
+# data "aws_subnet_ids" "default_subnets" {
+#   vpc_id = aws_default_vpc.default.id
+# }
+ 
+data "aws_subnets" "default_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [aws_default_vpc.default.id]
+  }
+}
+
+CHANGE 2
+# subnet_id = tolist(data.aws_subnet_ids.default_subnets.ids)[0]
+subnet_id = data.aws_subnets.default_subnets.ids[0]
